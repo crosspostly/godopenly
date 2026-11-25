@@ -1,16 +1,19 @@
 <!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<meta name="robots" content="noindex"><title>Stats</title>
-<style>body{font-family:Arial,sans-serif;max-width:560px;margin:20px auto;padding:0 16px}td{padding:6px 10px;border-bottom:1px solid #eee}td:last-child{text-align:right;font-weight:bold}h2{margin-top:28px}</style></head>
-<body><h1>God Openly: visits</h1><div id="out">Loading…</div>
+<meta name="robots" content="noindex"><title>God Openly stats</title>
+<style>body{font-family:Arial,sans-serif;max-width:620px;margin:20px auto;padding:0 14px;color:#222}
+table{border-collapse:collapse;width:100%;margin-bottom:22px}td,th{padding:6px 8px;border-bottom:1px solid #eee;text-align:right}td:first-child,th:first-child{text-align:left}
+.big{display:flex;gap:10px;flex-wrap:wrap}.card{flex:1;min-width:120px;background:#f6f1e6;border-radius:10px;padding:12px}.card b{font-size:26px;display:block}</style></head>
+<body><h1>God Openly: stats</h1><div id="out">Loading…</div>
 <script>
-var NS="godopenly-v1",G="https://abacus.jasoncameron.dev/get/"+NS+"/";
-var SRC=["youtube","short","long","direct","shorts-fast","long-fast"];
-var rows=[["Landing page views","landing"],["Unique visitors","landing-uniq"],["Thank-you page (= signups)","thanks"],["PDF downloads from thank-you","pdf-thanks"]];
-SRC.forEach(function(s){rows.push(["Landing from: "+s,"landing-src-"+s]);});
-function get(k){return fetch(G+k).then(function(r){return r.ok?r.json():{value:0}}).then(function(j){return j.value||0}).catch(function(){return 0});}
-Promise.all(rows.map(function(r){return get(r[1])})).then(function(v){
-  var L=v[0],T=v[2],h="<table>";
-  rows.forEach(function(r,i){h+="<tr><td>"+r[0]+"</td><td>"+v[i]+"</td></tr>";});
-  h+="<tr><td>Signup rate</td><td>"+(L?(100*T/L).toFixed(1):"0")+"%</td></tr></table>";
-  document.getElementById("out").innerHTML=h;});
+fetch("https://godopenly-counter.sheepoff.workers.dev/stats").then(r=>r.json()).then(function(s){
+  var t=s.total,g=k=>t[k]||0,L=g("landing"),T=g("thanks");
+  var h='<div class="big">'+[["Landing views",L],["Unique visitors",g("landing-uniq")],["Signups",T],["Signup rate",(L?(100*T/L).toFixed(1):0)+"%"],["PDF downloads",g("pdf-thanks")]]
+    .map(c=>'<div class="card">'+c[0]+'<b>'+c[1]+'</b></div>').join("")+'</div>';
+  var src={};Object.keys(t).forEach(function(k){var m=k.match(/^(landing|thanks)-src-(.+)$/);if(m){src[m[2]]=src[m[2]]||{landing:0,thanks:0};src[m[2]][m[1]]=t[k];}});
+  h+='<h2>By source (?src=)</h2><table><tr><th>Source</th><th>Visits</th><th>Signups</th><th>Rate</th></tr>';
+  Object.keys(src).sort((a,b)=>src[b].landing-src[a].landing).forEach(function(k){var v=src[k];h+='<tr><td>'+k+'</td><td>'+v.landing+'</td><td>'+v.thanks+'</td><td>'+(v.landing?(100*v.thanks/v.landing).toFixed(1):0)+'%</td></tr>';});
+  h+='</table><h2>Last 14 days</h2><table><tr><th>Day</th><th>Visits</th><th>Unique</th><th>Signups</th></tr>';
+  Object.keys(s.days).sort().reverse().forEach(function(d){var x=s.days[d];h+='<tr><td>'+d+'</td><td>'+(x.landing||0)+'</td><td>'+(x["landing-uniq"]||0)+'</td><td>'+(x.thanks||0)+'</td></tr>';});
+  document.getElementById("out").innerHTML=h+'</table>';
+}).catch(e=>document.getElementById("out").textContent="Error: "+e);
 </script></body></html>
