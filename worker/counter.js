@@ -7,7 +7,7 @@ const BOT_RE = /bot|crawl|spider|slurp|preview|facebookexternalhit|headless/i;
 const CORS = { "Access-Control-Allow-Origin": "*", "Cache-Control": "no-store" };
 // Партнёрские редиректы. Ссылки меняются здесь, а не в статьях и не в шапке профиля.
 const LINKS = {
-  halo: "https://gmm.one/2fc2981d-dec9-49e0-ab3b-87c487cb405d",
+  halo: "",
   praybefore: "https://praybefore.app/", // временно: партнёрская ссылка /r/<slug> появится после одобрения заявки
 };
 
