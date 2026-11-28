@@ -1,0 +1,8 @@
+name = "godopenly-counter"
+main = "counter.js"
+compatibility_date = "2025-01-01"
+
+[[d1_databases]]
+binding = "DB"
+database_name = "godopenly-stats"
+database_id = "3d2efd3d-e178-4514-a522-a0269662b49c"
